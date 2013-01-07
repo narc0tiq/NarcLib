@@ -55,6 +55,9 @@ public class PacketTileEntityState {
             assert world != null: "The world was null! You are not on the client, but you got a client-side packet!";
 
             TileEntityStateful machine = (TileEntityStateful)world.getBlockTileEntity(x, y, z);
+            if(machine == null) {
+                return;
+            }
             machine.readFromNetwork(data);
 
             if(NarcLib.isDebugging()) {
