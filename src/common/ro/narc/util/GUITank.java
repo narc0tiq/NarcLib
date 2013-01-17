@@ -1,6 +1,8 @@
 package ro.narc.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 
@@ -40,8 +42,19 @@ public class GUITank extends Gui {
     public void draw(int posX, int posY) {
         if((tank != null) && (tank.getLiquid() != null)) {
             ItemStack liquid = tank.getLiquid().asItemStack();
-            ForgeHooksClient.bindTexture(liquid.getItem().getTextureFile(), 0);
-            int iconIndex = liquid.getIconIndex();
+            int iconIndex = 0;
+            if(liquid.itemID < Block.blocksList.length && Block.blocksList[liquid.itemID] != null) {
+                ForgeHooksClient.bindTexture(Block.blocksList[liquid.itemID].getTextureFile(), 0);
+                iconIndex = Block.blocksList[liquid.itemID].blockIndexInTexture;
+            }
+            else if(Item.itemsList[liquid.itemID] != null) {
+                ForgeHooksClient.bindTexture(liquid.getItem().getTextureFile(), 0);
+                iconIndex = liquid.getIconIndex();
+            }
+            else {
+                return; // how do you draw something that's not a block or an item?
+            }
+
             int scaledValue = getScaledAmount();
 
             int imgY = iconIndex / 16;
